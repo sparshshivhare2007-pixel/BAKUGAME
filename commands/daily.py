@@ -1,12 +1,7 @@
-from economy import daily
-from database import create_user
+from telegram import Update
+from telegram.ext import CallbackContext
 
-def daily_cmd(update, context):
+def daily_cmd(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
-    create_user(user_id)
-
-    status, value = daily(user_id)
-    if status:
-        update.message.reply_text(f"🎁 You claimed your daily reward: 💰 {value} coins!")
-    else:
-        update.message.reply_text(f"⏳ Wait {value//3600} hours before daily reward!")
+    # Daily reward logic yahan
+    update.message.reply_text(f"📅 User {user_id} collected their daily reward!")
