@@ -1,11 +1,12 @@
-from database import load_data
+from telegram import Update
+from telegram.ext import CallbackContext
 
-def leaderboard_cmd(update, context):
-    data = load_data()
-    lb = sorted(data.items(), key=lambda x: x[1]["money"], reverse=True)
-
-    text = "🏆 Leaderboard:\n"
-    for i, (uid, info) in enumerate(lb[:10], 1):
-        text += f"{i}. User {uid} → 💰 {info['money']}\n"
-
+def leaderboard_cmd(update: Update, context: CallbackContext):
+    # Example leaderboard
+    leaderboard = [
+        "User1 - 500 coins",
+        "User2 - 400 coins",
+        "User3 - 300 coins"
+    ]
+    text = "🏆 Leaderboard:\n" + "\n".join(leaderboard)
     update.message.reply_text(text)
