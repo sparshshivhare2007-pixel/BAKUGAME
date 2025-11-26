@@ -1,5 +1,7 @@
-from telegram.ext import Updater, CommandHandler
-import configparser
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+import os
+from dotenv import load_dotenv
 from database import create_user
 from commands.work import work_cmd
 from commands.daily import daily_cmd
@@ -9,27 +11,28 @@ from commands.shop import shop_cmd
 from commands.buy import buy_cmd
 from commands.leaderboard import leaderboard_cmd
 
-import os
-from dotenv import load_dotenv
-
 load_dotenv()  # .env file se variables load karega
 TOKEN = os.getenv("BOT_TOKEN")
 
-updater = Updater(TOKEN)
-dp = updater.dispatcher
+# Naya Application Builder use karenge (Updater ke jagah)
+app = ApplicationBuilder().token(TOKEN).build()
 
-def start(update, context):
+# Start command
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     create_user(update.effective_user.id)
-    update.message.reply_text("🤖 Economy Bot Online!\nUse /work /daily /profile /rob /shop /buy /leaderboard")
+    await update.message.reply_text(
+        "🤖 Economy Bot Online!\nUse /work /daily /profile /rob /shop /buy /leaderboard"
+    )
 
-dp.add_handler(CommandHandler("start", start))
-dp.add_handler(CommandHandler("work", work_cmd))
-dp.add_handler(CommandHandler("daily", daily_cmd))
-dp.add_handler(CommandHandler("profile", profile_cmd))
-dp.add_handler(CommandHandler("rob", rob_cmd))
-dp.add_handler(CommandHandler("shop", shop_cmd))
-dp.add_handler(CommandHandler("buy", buy_cmd))
-dp.add_handler(CommandHandler("leaderboard", leaderboard_cmd))
+# Command handlers add karenge
+app.add_handler(CommandHandler("start", start))
+app.add_handler(CommandHandler("work", work_cmd))
+app.add_handler(CommandHandler("daily", daily_cmd))
+app.add_handler(CommandHandler("profile", profile_cmd))
+app.add_handler(CommandHandler("rob", rob_cmd))
+app.add_handler(CommandHandler("shop", shop_cmd))
+app.add_handler(CommandHandler("buy", buy_cmd))
+app.add_handler(CommandHandler("leaderboard", leaderboard_cmd))
 
-updater.start_polling()
-updater.idle()
+# Bot start karenge
+app.run_polling()
