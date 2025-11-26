@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()  # .env file se variables load karega
 TOKEN = os.getenv("BOT_TOKEN")
 
-updater = Updater(TOKEN, use_context=True)
+updater = Updater(TOKEN)
 dp = updater.dispatcher
 
 def start(update, context):
