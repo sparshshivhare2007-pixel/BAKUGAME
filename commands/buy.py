@@ -1,27 +1,12 @@
-from database import get_user, update_user
+from telegram import Update
+from telegram.ext import CallbackContext
 
-def buy_cmd(update, context):
-    if not context.args:
-        update.message.reply_text("Usage: /buy <item>")
-        return
-
-    item = context.args[0].capitalize()
+def buy_cmd(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
-    user = get_user(user_id)
-
-    prices = {"Laptop": 5000, "Bike": 20000, "Car": 50000}
-
-    if item not in prices:
-        update.message.reply_text("Item not found!")
+    args = context.args
+    if not args:
+        update.message.reply_text("Usage: /buy <item_name>")
         return
-
-    if user["money"] < prices[item]:
-        update.message.reply_text("Not enough money!")
-        return
-
-    user["money"] -= prices[item]
-    user["inventory"].append(item)
-    update_user(user_id, "money", user["money"])
-    update_user(user_id, "inventory", user["inventory"])
-
-    update.message.reply_text(f"✅ You bought {item}!")
+    item = " ".join(args)
+    # Database me item purchase logic
+    update.message.reply_text(f"🛍️ User {user_id} bought {item}!")
