@@ -1,13 +1,8 @@
-from database import get_user, create_user
+from telegram import Update
+from telegram.ext import CallbackContext
 
-def profile_cmd(update, context):
+def profile_cmd(update: Update, context: CallbackContext):
     user_id = update.effective_user.id
-    create_user(user_id)
-    user = get_user(user_id)
-
-    text = (
-        f"👤 Profile\n"
-        f"Money: 💰 {user['money']}\n"
-        f"Inventory: {', '.join(user['inventory']) if user['inventory'] else 'Empty'}"
-    )
-    update.message.reply_text(text)
+    # Fetch user profile from database
+    coins = 100  # Example value
+    update.message.reply_text(f"👤 Profile of {user_id}\n💰 Coins: {coins}")
