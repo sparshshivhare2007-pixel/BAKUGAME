@@ -1,7 +1,7 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import Updater, CommandHandler
 import os
 from dotenv import load_dotenv
+
 from database import create_user
 from commands.work import work_cmd
 from commands.daily import daily_cmd
@@ -11,28 +11,33 @@ from commands.shop import shop_cmd
 from commands.buy import buy_cmd
 from commands.leaderboard import leaderboard_cmd
 
-load_dotenv()  # .env file se variables load karega
+# .env file se variables load karega
+load_dotenv()
 TOKEN = os.getenv("BOT_TOKEN")
 
-# Naya Application Builder use karenge (Updater ke jagah)
-app = ApplicationBuilder().token(TOKEN).build()
+# Updater & dispatcher setup
+updater = Updater(TOKEN, use_context=True)
+dp = updater.dispatcher
 
 # Start command
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+def start(update, context):
     create_user(update.effective_user.id)
-    await update.message.reply_text(
+    update.message.reply_text(
         "🤖 Economy Bot Online!\nUse /work /daily /profile /rob /shop /buy /leaderboard"
     )
 
 # Command handlers add karenge
-app.add_handler(CommandHandler("start", start))
-app.add_handler(CommandHandler("work", work_cmd))
-app.add_handler(CommandHandler("daily", daily_cmd))
-app.add_handler(CommandHandler("profile", profile_cmd))
-app.add_handler(CommandHandler("rob", rob_cmd))
-app.add_handler(CommandHandler("shop", shop_cmd))
-app.add_handler(CommandHandler("buy", buy_cmd))
-app.add_handler(CommandHandler("leaderboard", leaderboard_cmd))
+dp.add_handler(CommandHandler("start", start))
+dp.add_handler(CommandHandler("work", work_cmd))
+dp.add_handler(CommandHandler("daily", daily_cmd))
+dp.add_handler(CommandHandler("profile", profile_cmd))
+dp.add_handler(CommandHandler("rob", rob_cmd))
+dp.add_handler(CommandHandler("shop", shop_cmd))
+dp.add_handler(CommandHandler("buy", buy_cmd))
+dp.add_handler(CommandHandler("leaderboard", leaderboard_cmd))
 
 # Bot start karenge
-app.run_polling()
+if __name__ == "__main__":
+    print("🤖 Bot is starting...")
+    updater.start_polling()
+    updater.idle()
