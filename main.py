@@ -9,9 +9,11 @@ from commands.shop import shop_cmd
 from commands.buy import buy_cmd
 from commands.leaderboard import leaderboard_cmd
 
-config = configparser.ConfigParser()
-config.read("config.ini")
-TOKEN = config["bot"]["token"]
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # .env file se variables load karega
+TOKEN = os.getenv("BOT_TOKEN")
 
 updater = Updater(TOKEN, use_context=True)
 dp = updater.dispatcher
